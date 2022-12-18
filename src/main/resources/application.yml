@@ -1,0 +1,47 @@
+server:
+  port: 8000
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+
+spring:
+  application:
+    name: gateway-server
+
+  cloud:
+    gateway:
+      routes:
+        - id: user-server
+          uri: http://localhost:8080 # ???? ??, http://localhost:8000/user ? ???? http://localhost:64412 ? ???
+          predicates:
+            - Path=/user/**
+
+        - id: post-server
+          uri: http://localhost:8090 # ??? ? ??, http://localhost:8000/order ? ???? http://localhost:54412 ? ???
+          predicates:
+            - Path=/post/**
+
+        - id: blog-server
+          uri: http://localhost:8100 # ??? ? ??, http://localhost:8000/order ? ???? http://localhost:54412 ? ???
+          predicates:
+            - Path=/blog/**
+
+      default-filters:
+        - DedupeResponseHeader=Access-Control-Allow-Origin Access-Control-Allow-Credentials
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins: 'http://localhost:3000'
+            allow-credentials: true
+            allowedHeaders: '*'
+            allowedMethods:
+              - PUT
+              - GET
+              - POST
+              - DELETE
+              - OPTIONS
+
+jwt:
+  secret: "aGVsbG93b3JsZC13ZWItaGVsbG8xMjMtc21hcnQtaWN0LWZpbmFsLXByb2plY3Q=="
